@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +41,8 @@ public class DynamicPriceAddon extends JavaPlugin implements DynamicPriceProvide
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Bukkit.getLogger().info("[DynamicPricingAddon] Reloading started.");
-        sender.sendMessage("Reloading started. Note that this erased all transactions from last minute");
+        sender.sendMessage("Reloading started. Saving cached stocks...");
+        saveStocks();
         loadStocks();
         Bukkit.getLogger().info("[DynamicPricingAddon] Reloading completed. Transactions from "+fileName+" were loaded.");
         sender.sendMessage("Reloading completed. Transactions from "+fileName+" were loaded.");
@@ -50,6 +50,7 @@ public class DynamicPriceAddon extends JavaPlugin implements DynamicPriceProvide
     }
 
     public void loadStocks() {
+        map.clear();
         File f = new File(getDataFolder(), fileName);
         if(!f.exists()) return;
         try {
